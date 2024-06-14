@@ -12,7 +12,13 @@ defmodule Nomad do
       :world
 
   """
+  def start(_type, _args) do
+    hello()
+    {:ok, self()}
+  end
+
+
   def hello do
-    :world
+    IO.puts "hello, world!"
   end
 end
