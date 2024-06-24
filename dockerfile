@@ -37,31 +37,14 @@ COPY . /NomadEngine/
 # install elixir
 RUN apk add --no-cache erlang elixir
 
-# install necessary components
-RUN apk --update add --no-cache sudo git make erlang erlang-crypto erlang-syntax-tools \
-    erlang-inets erlang-ssl erlang-public-key erlang-asn1 erlang-sasl \
-    erlang-erl-interface erlang-dev erlang-parsetools erlang-eunit erlang-tools
-
 # set the elixir version
-ENV ELIXIR_VERSION = v1.17.0
-
-# get the elixir version and install locally on base
-#RUN wget https://github.com/elixir-lang/elixir/releases/download/${ELIXIR_VERSION}/precompiled.zip && \
-#    unzip precompiled.zip && \
-#    rm precompiled
+ENV ELIXIR_VERSION=v1.17.0
 
 RUN mix local.hex --force && \
     mix local.rebar --force
 
-# Set the path variable to include elixir's bin path
-#ENV PATH=$PATH:/NomadEngine/elixir/bin
-#ENV PATH=$PATH:/usr/local/bin
-
-# Verify elixir is installed correctly
-#RUN elixir --version
-
 # install the project dependencies
-#RUN mix deps.get
+RUN mix deps.get
 
 # Install project dependencies locally, compile them
 #RUN mix deps.compile
@@ -75,25 +58,24 @@ RUN mix local.hex --force && \
 # the smallest image possible. This often means using a different and smaller
 # image than the one used for building the application, but for illustrative
 # purposes the "base" image is used here.
-FROM base AS final
+#FROM base AS final
 
 # Create a non-privileged user that the app will run under.
 # all subsequent RUN commands are run as appuser
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
-USER appuser
+#ARG UID=10001
+#RUN adduser \
+#    --disabled-password \
+#    --gecos "" \
+#    --home "/nonexistent" \
+#    --shell "/sbin/nologin" \
+#    --no-create-home \
+#    --uid "${UID}" \
+#    appuser
+#USER appuser
 
 # What the container should run when it is started.
 # ENTRYPOINT [ "/bin/hello.sh" ]
 
 # run the elixir application
-#CMD ["mix", "run"]
-#CMD ["mix", "run"]
+CMD ["mix", "run"]
